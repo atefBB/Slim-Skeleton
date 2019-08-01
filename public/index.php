@@ -34,5 +34,25 @@ $app->get('/', function () use ($app) {
     $app->render('index.html');
 });
 
+$app->get("/job", function () use ($app) {
+    try {
+        // Required if redis is located elsewhere
+        Resque::setBackend('172.17.0.1:6379');
+
+        $token = Resque::enqueue(
+            'default', Queue\Jobs\MyJob::class,
+            array(
+                'name' => 'Chris',
+            )
+        );
+
+        echo "Job #{$token} added with success !";
+    } catch (Exception $e) {
+        $app->log->info(
+            sprintf("Error while adding job to queue, with message: %s", $e->getMessage())
+        );
+    }
+});
+
 // Run app
 $app->run();
