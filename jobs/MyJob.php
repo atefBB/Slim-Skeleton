@@ -6,6 +6,6 @@ class MyJob
     public function perform()
     {
         // Work work work
-        echo $this->args['name'];
+        echo "Hello {$this->args['name']}!\n";
     }
 }
